@@ -10,8 +10,10 @@ Reines HTML/CSS/JavaScript – läuft direkt im Browser und auf GitHub Pages, oh
 - **Tippen** – Hauptstadt frei eingeben (toleranter Vergleich: Groß-/Kleinschreibung und Akzente egal).
 - **Liste** – alle 27 Länder mit Hauptstadt und Flagge, durchsuchbar.
 - **Falsche üben** – wiederholt gezielt die Länder, die im Quiz oder Tippen falsch beantwortet wurden.
-  Richtig beantwortete Länder verschwinden aus der Liste. Falsche werden in `localStorage` gespeichert,
-  bleiben also über Sitzungen hinweg erhalten.
+  Die Liste bleibt erhalten, sodass falsche Antworten **immer wieder** geübt werden können. Ein Land
+  verschwindet erst, wenn man es bewusst über den Knopf „Gelernt – aus Falsch-Liste entfernen" herausnimmt
+  (oder alle über „Falsche zurücksetzen" löscht). Gespeichert in `localStorage`, bleibt also über
+  Sitzungen hinweg erhalten.
 
 ## Lokal starten
 

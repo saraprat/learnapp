@@ -192,7 +192,6 @@
         });
         if (!correct) btn.classList.add("wrong");
         if (correct) score++;
-        onAnswered(correct, c);
 
         const next = document.createElement("button");
         next.className = "btn";
@@ -200,6 +199,7 @@
         next.textContent = index + 1 < deck.length ? "Weiter" : "Ergebnis";
         next.addEventListener("click", () => { index++; proceed(); });
         card.appendChild(next);
+        onAnswered(correct, c, card);
         next.focus();
       });
       optWrap.appendChild(btn);
@@ -337,8 +337,8 @@
         `<div class="big">${remaining.length ? "💪" : "🎉"}</div>` +
         `<p>Runde beendet – ${score} von ${deck.length} richtig.</p>` +
         (remaining.length
-          ? `<p>Noch ${remaining.length} Land/Länder zum Üben.</p>`
-          : `<p>Alle Falschen gemeistert!</p>`) +
+          ? `<p>${remaining.length} Land/Länder in der Liste – beliebig oft wiederholbar.</p>`
+          : `<p>Alle Falschen entfernt!</p>`) +
         `</div>`;
       const btns = document.createElement("div");
       btns.className = "row-btns";
@@ -353,9 +353,20 @@
       setProgress("");
       return;
     }
-    // Quiz-Format; richtige Antwort entfernt das Land aus der Falsch-Liste.
-    renderQuizCard(deck[index], (correct, c) => {
-      if (correct) clearWrong(c.country);
+    // Quiz-Format. Falsche bleiben gespeichert, damit sie immer wieder geübt
+    // werden können – erst der "Gelernt"-Knopf entfernt ein Land aus der Liste.
+    renderQuizCard(deck[index], (correct, c, card) => {
+      if (!correct) return;
+      const learned = document.createElement("button");
+      learned.className = "btn btn--ghost";
+      learned.style.marginTop = "10px";
+      learned.textContent = "Gelernt – aus Falsch-Liste entfernen";
+      learned.addEventListener("click", () => {
+        clearWrong(c.country);
+        learned.disabled = true;
+        learned.textContent = "Entfernt ✓";
+      });
+      card.appendChild(learned);
     }, renderWrong);
   }
 
