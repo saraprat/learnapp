@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EU-Länder lernen – Hauptstädte der 27 EU-Staaten</title>
+  <meta name="description" content="Lerne die 27 EU-Länder und ihre Hauptstädte: Karteikarten, Quiz, Tippen, Liste und das Üben falscher Antworten." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>🇪🇺 EU-Länder lernen</h1>
+    <p class="subtitle">Die 27 EU-Staaten und ihre Hauptstädte</p>
+  </header>
+
+  <nav class="modes" aria-label="Lernmodus wählen">
+    <button class="mode-btn" data-mode="flashcards">Karteikarten</button>
+    <button class="mode-btn" data-mode="quiz">Quiz</button>
+    <button class="mode-btn" data-mode="type">Tippen</button>
+    <button class="mode-btn" data-mode="list">Liste</button>
+    <button class="mode-btn mode-btn--wrong" data-mode="wrong">Falsche üben <span id="wrong-count" class="badge">0</span></button>
+  </nav>
+
+  <main id="view" class="view" aria-live="polite"></main>
+
+  <footer class="app-footer">
+    <span id="progress" class="progress"></span>
+    <button id="reset-wrong" class="link-btn" type="button" hidden>Falsche zurücksetzen</button>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
