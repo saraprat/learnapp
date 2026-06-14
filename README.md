@@ -25,6 +25,20 @@ Jedes Thema hat seine eigene „Falsche üben"-Liste.
   (oder alle über „Falsche zurücksetzen" löscht). Gespeichert in `localStorage` (pro Thema getrennt),
   bleibt also über Sitzungen hinweg erhalten.
 
+## Als Web-App installieren (PWA)
+
+Die App ist eine **Progressive Web App** und lässt sich auf Handy oder Desktop
+installieren – danach startet sie wie eine native App im eigenen Fenster und
+funktioniert **offline**.
+
+- **Android/Chrome:** Menü ⋮ → „App installieren" bzw. „Zum Startbildschirm hinzufügen".
+- **iPhone/Safari:** Teilen-Symbol → „Zum Home-Bildschirm".
+- **Desktop (Chrome/Edge):** Installations-Symbol in der Adressleiste.
+
+Dafür sorgen `manifest.webmanifest` (Name, Icon, Farben) und `service-worker.js`
+(cacht die App-Shell für den Offline-Betrieb). Bei Inhaltsänderungen die
+`CACHE_VERSION` im Service Worker erhöhen, damit Clients die neue Version laden.
+
 ## Lokal starten
 
 Einfach `index.html` im Browser öffnen – oder einen kleinen Webserver nutzen:
@@ -48,6 +62,9 @@ muss als Source **„GitHub Actions"** ausgewählt sein.
 | `style.css`   | Gestaltung                                     |
 | `app.js`      | Logik aller Lernmodi (themenunabhängig)        |
 | `data.js`     | Die Themen mit ihren Lernkarten                |
+| `manifest.webmanifest` | Web-App-Manifest (Name, Icon, Farben) |
+| `service-worker.js`    | Offline-Cache der App-Shell           |
+| `icon.svg`    | App-Icon                                       |
 
 ## Neues Thema hinzufügen
 

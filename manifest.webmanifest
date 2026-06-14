@@ -1,0 +1,20 @@
+{
+  "name": "Lernkarten – EU-Länder & Blütenpflanzen",
+  "short_name": "Lernkarten",
+  "description": "Lern-App mit Karteikarten, Quiz, Tippen, Liste und dem Üben falscher Antworten. Themen: EU-Länder & Hauptstädte und Blütenpflanzen.",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f6fb",
+  "theme_color": "#003399",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

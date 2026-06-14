@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lernkarten – EU-Länder & Blütenpflanzen</title>
   <meta name="description" content="Lern-App mit Karteikarten, Quiz, Tippen, Liste und dem Üben falscher Antworten. Themen: EU-Länder & Hauptstädte und Blütenpflanzen (Biologie)." />
+
+  <!-- Web-App / PWA -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#003399" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Lernkarten" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -34,5 +45,15 @@
 
   <script src="data.js"></script>
   <script src="app.js"></script>
+  <script>
+    // Service Worker registrieren – macht die App installierbar und offline-fähig.
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js").catch((err) => {
+          console.warn("Service Worker konnte nicht registriert werden:", err);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
