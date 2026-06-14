@@ -1,27 +1,36 @@
-/* EU-Länder-Lern-App
+/* Lern-App mit mehreren Themen.
  * Modi: Karteikarten, Quiz, Tippen, Liste, Falsche üben.
- * Falsch beantwortete Länder werden in localStorage gemerkt.
+ * Falsch beantwortete Karten werden pro Thema in localStorage gemerkt und
+ * lassen sich beliebig oft wiederholen, bis man sie als "gelernt" markiert.
  */
 (function () {
   "use strict";
 
-  const STORAGE_KEY = "eu-lernapp-wrong";
+  const TOPIC_KEY = "lernapp-topic";
   const view = document.getElementById("view");
   const progressEl = document.getElementById("progress");
   const wrongCountEl = document.getElementById("wrong-count");
   const resetWrongBtn = document.getElementById("reset-wrong");
+  const titleEl = document.getElementById("app-title");
+  const subtitleEl = document.getElementById("app-subtitle");
+  const topicSelect = document.getElementById("topic");
   const modeButtons = Array.from(document.querySelectorAll(".mode-btn"));
 
+  let topic = TOPICS[0]; // aktuelles Thema
   let mode = "flashcards";
-  let deck = [];        // aktuelle Reihenfolge der Länder
-  let index = 0;        // Position im Deck
-  let score = 0;        // richtige Antworten in dieser Runde
+  let deck = [];         // aktuelle Reihenfolge der Karten
+  let index = 0;         // Position im Deck
+  let score = 0;         // richtige Antworten in dieser Runde
 
-  /* ---------- Hilfsfunktionen ---------- */
+  /* ---------- Falsch-Liste (pro Thema) ---------- */
+
+  function storageKey() {
+    return "lernapp-wrong-" + topic.id;
+  }
 
   function loadWrong() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(storageKey());
       const arr = raw ? JSON.parse(raw) : [];
       return new Set(Array.isArray(arr) ? arr : []);
     } catch (_) {
@@ -31,26 +40,33 @@
 
   function saveWrong(set) {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(set)));
+      localStorage.setItem(storageKey(), JSON.stringify(Array.from(set)));
     } catch (_) { /* ignore */ }
     updateWrongBadge();
   }
 
-  function markWrong(country) {
+  function markWrong(key) {
     const set = loadWrong();
-    set.add(country);
+    set.add(key);
     saveWrong(set);
   }
 
-  function clearWrong(country) {
+  function clearWrong(key) {
     const set = loadWrong();
-    set.delete(country);
+    set.delete(key);
     saveWrong(set);
   }
 
   function updateWrongBadge() {
     wrongCountEl.textContent = String(loadWrong().size);
   }
+
+  function wrongDeck() {
+    const set = loadWrong();
+    return topic.cards.filter((c) => set.has(c.front));
+  }
+
+  /* ---------- Hilfsfunktionen ---------- */
 
   function shuffle(arr) {
     const a = arr.slice();
@@ -72,13 +88,22 @@
       .replace(/\s+/g, " ");
   }
 
-  function wrongDeck() {
-    const set = loadWrong();
-    return COUNTRIES.filter((c) => set.has(c.country));
-  }
-
   function setProgress(text) {
     progressEl.textContent = text || "";
+  }
+
+  /* ---------- Themen-Steuerung ---------- */
+
+  function setTopic(id) {
+    const next = TOPICS.find((t) => t.id === id) || TOPICS[0];
+    topic = next;
+    try { localStorage.setItem(TOPIC_KEY, topic.id); } catch (_) { /* ignore */ }
+    topicSelect.value = topic.id;
+    titleEl.textContent = `${topic.emoji} ${topic.name}`;
+    subtitleEl.textContent = topic.subtitle;
+    document.title = `${topic.name} lernen`;
+    updateWrongBadge();
+    setMode(mode);
   }
 
   /* ---------- Modus-Steuerung ---------- */
@@ -96,9 +121,9 @@
     view.innerHTML = "";
     setProgress("");
     switch (mode) {
-      case "flashcards": deck = shuffle(COUNTRIES); renderFlashcard(); break;
-      case "quiz":       deck = shuffle(COUNTRIES); renderQuiz(); break;
-      case "type":       deck = shuffle(COUNTRIES); renderType(); break;
+      case "flashcards": deck = shuffle(topic.cards); renderFlashcard(); break;
+      case "quiz":       deck = shuffle(topic.cards); renderQuiz(); break;
+      case "type":       deck = shuffle(topic.cards); renderType(); break;
       case "list":       renderList(); break;
       case "wrong":      deck = shuffle(wrongDeck()); renderWrong(); break;
     }
@@ -118,16 +143,16 @@
 
     function paintFront() {
       card.innerHTML =
-        `<div class="prompt-flag">${c.flag}</div>` +
-        `<div class="prompt-label">Land</div>` +
-        `<p class="prompt-value">${c.country}</p>` +
-        `<p class="hint">Tippe auf die Karte, um die Hauptstadt zu sehen</p>`;
+        `<div class="prompt-flag">${c.icon || ""}</div>` +
+        `<div class="prompt-label">${topic.promptLabel}</div>` +
+        `<p class="prompt-value">${c.front}</p>` +
+        `<p class="hint">Tippe auf die Karte, um die Antwort zu sehen</p>`;
     }
     function paintBack() {
       card.innerHTML =
-        `<div class="prompt-flag">${c.flag}</div>` +
-        `<div class="prompt-label">Hauptstadt von ${c.country}</div>` +
-        `<p class="prompt-value answer">${c.capital}</p>` +
+        `<div class="prompt-flag">${c.icon || ""}</div>` +
+        `<div class="prompt-label">${topic.answerLabel}</div>` +
+        `<p class="prompt-value answer">${c.back}</p>` +
         `<div class="row-btns">` +
         `<button class="btn btn--bad" data-act="nope">Nicht gewusst</button>` +
         `<button class="btn btn--ok" data-act="yep">Gewusst</button>` +
@@ -143,7 +168,7 @@
       const act = e.target.closest("[data-act]");
       if (act) {
         e.stopPropagation();
-        if (act.dataset.act === "nope") markWrong(c.country);
+        if (act.dataset.act === "nope") markWrong(c.front);
         index++;
         renderFlashcard();
         return;
@@ -162,19 +187,22 @@
   /* ---------- Quiz (Multiple Choice) ---------- */
 
   function renderQuizCard(c, onAnswered, proceed) {
+    // Drei falsche Antworten aus dem Themenpool wählen (ohne Dubletten).
+    const pool = Array.from(new Set(
+      topic.cards.map((x) => x.back).filter((b) => b !== c.back)
+    ));
+    const distractors = shuffle(pool).slice(0, 3);
+    const options = shuffle([c.back, ...distractors]);
 
-    // Drei falsche Hauptstädte aus dem Gesamtpool wählen.
-    const distractors = shuffle(COUNTRIES.filter((x) => x.capital !== c.capital))
-      .slice(0, 3)
-      .map((x) => x.capital);
-    const options = shuffle([c.capital, ...distractors]);
+    const qValue = topic.quizPrompt ? `${c.front}?` : c.front;
+    const qLabel = topic.quizPrompt || topic.promptLabel;
 
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML =
-      `<div class="prompt-flag">${c.flag}</div>` +
-      `<div class="prompt-label">Wie heißt die Hauptstadt von</div>` +
-      `<p class="prompt-value">${c.country}?</p>` +
+      `<div class="prompt-flag">${c.icon || ""}</div>` +
+      `<div class="prompt-label">${qLabel}</div>` +
+      `<p class="prompt-value">${qValue}</p>` +
       `<div class="options"></div>` +
       `<div class="score-line">Richtig: ${score} / ${deck.length}</div>`;
 
@@ -185,10 +213,10 @@
       btn.type = "button";
       btn.textContent = opt;
       btn.addEventListener("click", () => {
-        const correct = opt === c.capital;
+        const correct = opt === c.back;
         optWrap.querySelectorAll(".option").forEach((b) => {
           b.disabled = true;
-          if (b.textContent === c.capital) b.classList.add("correct");
+          if (b.textContent === c.back) b.classList.add("correct");
         });
         if (!correct) btn.classList.add("wrong");
         if (correct) score++;
@@ -212,7 +240,7 @@
   function renderQuiz() {
     if (index >= deck.length) return renderRoundDone("Quiz", true);
     renderQuizCard(deck[index], (correct, c) => {
-      if (!correct) markWrong(c.country);
+      if (!correct) markWrong(c.front);
     }, renderQuiz);
   }
 
@@ -225,12 +253,12 @@
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML =
-      `<div class="prompt-flag">${c.flag}</div>` +
-      `<div class="prompt-label">Hauptstadt von</div>` +
-      `<p class="prompt-value">${c.country}?</p>` +
+      `<div class="prompt-flag">${c.icon || ""}</div>` +
+      `<div class="prompt-label">${topic.promptLabel}</div>` +
+      `<p class="prompt-value">${c.front}</p>` +
       `<form class="type-form">` +
       `<input class="type-input" type="text" autocomplete="off" autocapitalize="words" ` +
-      `spellcheck="false" placeholder="Hauptstadt eingeben…" aria-label="Hauptstadt" />` +
+      `spellcheck="false" placeholder="${topic.typePlaceholder}" aria-label="Antwort" />` +
       `<button class="btn" type="submit">Prüfen</button>` +
       `</form>` +
       `<div class="feedback" role="status"></div>` +
@@ -244,7 +272,7 @@
       e.preventDefault();
       const guess = input.value;
       if (!guess.trim()) return;
-      const correct = normalize(guess) === normalize(c.capital);
+      const correct = normalize(guess) === normalize(c.back);
       input.disabled = true;
       form.querySelector("button").disabled = true;
 
@@ -253,8 +281,8 @@
         feedback.textContent = "✓ Richtig!";
         feedback.className = "feedback ok";
       } else {
-        markWrong(c.country);
-        feedback.textContent = `✗ Falsch – richtig ist: ${c.capital}`;
+        markWrong(c.front);
+        feedback.textContent = `✗ Falsch – richtig ist: ${c.back}`;
         feedback.className = "feedback bad";
       }
 
@@ -280,7 +308,7 @@
     const search = document.createElement("input");
     search.className = "list-search";
     search.type = "search";
-    search.placeholder = "Land oder Hauptstadt suchen…";
+    search.placeholder = "Suchen…";
     search.setAttribute("aria-label", "Liste durchsuchen");
 
     const ul = document.createElement("ul");
@@ -289,10 +317,10 @@
     function paint(filter) {
       const f = normalize(filter || "");
       ul.innerHTML = "";
-      const items = COUNTRIES
+      const items = topic.cards
         .slice()
-        .sort((a, b) => a.country.localeCompare(b.country, "de"))
-        .filter((c) => !f || normalize(c.country).includes(f) || normalize(c.capital).includes(f));
+        .sort((a, b) => a.front.localeCompare(b.front, "de"))
+        .filter((c) => !f || normalize(c.front).includes(f) || normalize(c.back).includes(f));
       if (!items.length) {
         ul.innerHTML = `<li><span class="ln">Kein Treffer</span></li>`;
         return;
@@ -300,9 +328,11 @@
       items.forEach((c) => {
         const li = document.createElement("li");
         li.innerHTML =
-          `<span class="lf">${c.flag}</span>` +
-          `<span class="ln">${c.country}</span>` +
-          `<span class="lc">${c.capital}</span>`;
+          `<span class="lf">${c.icon || ""}</span>` +
+          `<span class="lt">` +
+          `<span class="ln">${c.front}</span>` +
+          `<span class="lc">${c.back}</span>` +
+          `</span>`;
         ul.appendChild(li);
       });
     }
@@ -313,7 +343,7 @@
     wrap.appendChild(search);
     wrap.appendChild(ul);
     view.appendChild(wrap);
-    setProgress(`${COUNTRIES.length} EU-Länder`);
+    setProgress(`${topic.cards.length} Karten`);
   }
 
   /* ---------- Falsche üben ---------- */
@@ -324,7 +354,7 @@
         `<div class="empty-state">` +
         `<div class="big">🎉</div>` +
         `<p>Keine falschen Antworten gespeichert.</p>` +
-        `<p>Spiele Quiz oder Tippen – falsch beantwortete Länder landen hier zum Wiederholen.</p>` +
+        `<p>Spiele Quiz oder Tippen – falsch beantwortete Karten landen hier zum Wiederholen.</p>` +
         `</div>`;
       setProgress("");
       return;
@@ -337,7 +367,7 @@
         `<div class="big">${remaining.length ? "💪" : "🎉"}</div>` +
         `<p>Runde beendet – ${score} von ${deck.length} richtig.</p>` +
         (remaining.length
-          ? `<p>${remaining.length} Land/Länder in der Liste – beliebig oft wiederholbar.</p>`
+          ? `<p>${remaining.length} Karte(n) in der Liste – beliebig oft wiederholbar.</p>`
           : `<p>Alle Falschen entfernt!</p>`) +
         `</div>`;
       const btns = document.createElement("div");
@@ -354,7 +384,7 @@
       return;
     }
     // Quiz-Format. Falsche bleiben gespeichert, damit sie immer wieder geübt
-    // werden können – erst der "Gelernt"-Knopf entfernt ein Land aus der Liste.
+    // werden können – erst der "Gelernt"-Knopf entfernt eine Karte aus der Liste.
     renderQuizCard(deck[index], (correct, c, card) => {
       if (!correct) return;
       const learned = document.createElement("button");
@@ -362,7 +392,7 @@
       learned.style.marginTop = "10px";
       learned.textContent = "Gelernt – aus Falsch-Liste entfernen";
       learned.addEventListener("click", () => {
-        clearWrong(c.country);
+        clearWrong(c.front);
         learned.disabled = true;
         learned.textContent = "Entfernt ✓";
       });
@@ -392,12 +422,27 @@
 
   /* ---------- Init ---------- */
 
+  // Themen-Auswahl füllen.
+  TOPICS.forEach((t) => {
+    const opt = document.createElement("option");
+    opt.value = t.id;
+    opt.textContent = `${t.emoji} ${t.name}`;
+    topicSelect.appendChild(opt);
+  });
+  topicSelect.addEventListener("change", () => setTopic(topicSelect.value));
+
   modeButtons.forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
   resetWrongBtn.addEventListener("click", () => {
     saveWrong(new Set());
     if (mode === "wrong") render();
   });
 
-  updateWrongBadge();
-  setMode("flashcards");
+  // Zuletzt gewähltes Thema wiederherstellen.
+  let startId = TOPICS[0].id;
+  try {
+    const saved = localStorage.getItem(TOPIC_KEY);
+    if (saved && TOPICS.some((t) => t.id === saved)) startId = saved;
+  } catch (_) { /* ignore */ }
+
+  setTopic(startId);
 })();

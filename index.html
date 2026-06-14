@@ -3,14 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EU-Länder lernen – Hauptstädte der 27 EU-Staaten</title>
-  <meta name="description" content="Lerne die 27 EU-Länder und ihre Hauptstädte: Karteikarten, Quiz, Tippen, Liste und das Üben falscher Antworten." />
+  <title>Lernkarten – EU-Länder & Blütenpflanzen</title>
+  <meta name="description" content="Lern-App mit Karteikarten, Quiz, Tippen, Liste und dem Üben falscher Antworten. Themen: EU-Länder & Hauptstädte und Blütenpflanzen (Biologie)." />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="app-header">
-    <h1>🇪🇺 EU-Länder lernen</h1>
-    <p class="subtitle">Die 27 EU-Staaten und ihre Hauptstädte</p>
+    <h1 id="app-title">Lernkarten</h1>
+    <p class="subtitle" id="app-subtitle"></p>
+    <label class="topic-select">
+      <span>Thema:</span>
+      <select id="topic" aria-label="Thema wählen"></select>
+    </label>
   </header>
 
   <nav class="modes" aria-label="Lernmodus wählen">

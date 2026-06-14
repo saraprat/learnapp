@@ -1,19 +1,29 @@
-# 🇪🇺 EU-Länder lernen
+# 🌱 Lernkarten-App
 
-Eine kleine, build-freie Lern-App für die **27 EU-Mitgliedsstaaten und ihre Hauptstädte**.
-Reines HTML/CSS/JavaScript – läuft direkt im Browser und auf GitHub Pages, ohne Abhängigkeiten.
+Eine kleine, build-freie Lern-App mit mehreren Themen. Reines HTML/CSS/JavaScript –
+läuft direkt im Browser und auf GitHub Pages, ohne Abhängigkeiten.
+
+## Themen
+
+Oben lässt sich über das Auswahlfeld **Thema** zwischen den Lerninhalten umschalten:
+
+- **🇪🇺 EU-Länder** – die 27 EU-Mitgliedsstaaten und ihre Hauptstädte.
+- **🌼 Blütenpflanzen** – Biologie: Aufbau der Pflanze und der Blüte, Bestäubung,
+  Befruchtung, Früchte und Samenverbreitung (aus dem Schul-Dossier).
+
+Jedes Thema hat seine eigene „Falsche üben"-Liste.
 
 ## Lernmodi
 
-- **Karteikarten** – Land ansehen, antippen, Hauptstadt aufdecken, „Gewusst / Nicht gewusst" markieren.
-- **Quiz** – Multiple-Choice: die richtige Hauptstadt aus vier Optionen wählen.
-- **Tippen** – Hauptstadt frei eingeben (toleranter Vergleich: Groß-/Kleinschreibung und Akzente egal).
-- **Liste** – alle 27 Länder mit Hauptstadt und Flagge, durchsuchbar.
-- **Falsche üben** – wiederholt gezielt die Länder, die im Quiz oder Tippen falsch beantwortet wurden.
-  Die Liste bleibt erhalten, sodass falsche Antworten **immer wieder** geübt werden können. Ein Land
-  verschwindet erst, wenn man es bewusst über den Knopf „Gelernt – aus Falsch-Liste entfernen" herausnimmt
-  (oder alle über „Falsche zurücksetzen" löscht). Gespeichert in `localStorage`, bleibt also über
-  Sitzungen hinweg erhalten.
+- **Karteikarten** – Frage ansehen, antippen, Antwort aufdecken, „Gewusst / Nicht gewusst" markieren.
+- **Quiz** – Multiple-Choice: die richtige Antwort aus vier Optionen wählen.
+- **Tippen** – Antwort frei eingeben (toleranter Vergleich: Groß-/Kleinschreibung und Akzente egal).
+- **Liste** – alle Karten des Themas mit Frage und Antwort, durchsuchbar.
+- **Falsche üben** – wiederholt gezielt die Karten, die im Quiz oder Tippen falsch beantwortet wurden.
+  Die Liste bleibt erhalten, sodass falsche Antworten **immer wieder** geübt werden können. Eine Karte
+  verschwindet erst, wenn man sie bewusst über den Knopf „Gelernt – aus Falsch-Liste entfernen" herausnimmt
+  (oder alle über „Falsche zurücksetzen" löscht). Gespeichert in `localStorage` (pro Thema getrennt),
+  bleibt also über Sitzungen hinweg erhalten.
 
 ## Lokal starten
 
@@ -32,9 +42,30 @@ muss als Source **„GitHub Actions"** ausgewählt sein.
 
 ## Dateien
 
-| Datei         | Zweck                                  |
-| ------------- | -------------------------------------- |
-| `index.html`  | Seitenstruktur                         |
-| `style.css`   | Gestaltung (EU-Blau/Gold)              |
-| `app.js`      | Logik aller Lernmodi                   |
-| `data.js`     | Die 27 EU-Länder mit Hauptstädten      |
+| Datei         | Zweck                                          |
+| ------------- | ---------------------------------------------- |
+| `index.html`  | Seitenstruktur                                 |
+| `style.css`   | Gestaltung                                     |
+| `app.js`      | Logik aller Lernmodi (themenunabhängig)        |
+| `data.js`     | Die Themen mit ihren Lernkarten                |
+
+## Neues Thema hinzufügen
+
+In `data.js` dem Array `TOPICS` ein Objekt hinzufügen:
+
+```js
+{
+  id: "kuerzel",
+  name: "Anzeigename",
+  emoji: "📚",
+  subtitle: "Kurzbeschreibung",
+  promptLabel: "Frage",        // Label auf der Kartenvorderseite
+  answerLabel: "Antwort",      // Label auf der Kartenrückseite
+  quizPrompt: "",              // optionaler Text vor der Quizfrage
+  typePlaceholder: "Antwort eingeben…",
+  cards: [
+    { front: "Frage?", back: "Antwort", icon: "🔤" },
+    // …
+  ],
+}
+```
