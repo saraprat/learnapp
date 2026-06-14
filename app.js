@@ -11,7 +11,6 @@
   const progressEl = document.getElementById("progress");
   const wrongCountEl = document.getElementById("wrong-count");
   const resetWrongBtn = document.getElementById("reset-wrong");
-  const titleEl = document.getElementById("app-title");
   const subtitleEl = document.getElementById("app-subtitle");
   const topicSelect = document.getElementById("topic");
   const modeButtons = Array.from(document.querySelectorAll(".mode-btn"));
@@ -99,9 +98,8 @@
     topic = next;
     try { localStorage.setItem(TOPIC_KEY, topic.id); } catch (_) { /* ignore */ }
     topicSelect.value = topic.id;
-    titleEl.textContent = `${topic.emoji} ${topic.name}`;
-    subtitleEl.textContent = topic.subtitle;
-    document.title = `${topic.name} lernen`;
+    subtitleEl.textContent = `${topic.emoji} ${topic.name} · ${topic.subtitle}`;
+    document.title = `Vinci-Lernapp · ${topic.name}`;
     updateWrongBadge();
     setMode(mode);
   }

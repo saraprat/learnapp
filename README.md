@@ -1,4 +1,4 @@
-# 🌱 Lernkarten-App
+# 🌱 Vinci-Lernapp
 
 Eine kleine, build-freie Lern-App mit mehreren Themen. Reines HTML/CSS/JavaScript –
 läuft direkt im Browser und auf GitHub Pages, ohne Abhängigkeiten.

@@ -1,6 +1,6 @@
 {
-  "name": "Lernkarten – EU-Länder & Blütenpflanzen",
-  "short_name": "Lernkarten",
+  "name": "Vinci-Lernapp",
+  "short_name": "Vinci-Lernapp",
   "description": "Lern-App mit Karteikarten, Quiz, Tippen, Liste und dem Üben falscher Antworten. Themen: EU-Länder & Hauptstädte und Blütenpflanzen.",
   "lang": "de",
   "start_url": "./",

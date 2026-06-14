@@ -1,8 +1,8 @@
-/* Service Worker für die Lernkarten-App.
+/* Service Worker für die Vinci-Lernapp.
  * Cacht die App-Shell, damit die App offline läuft und schnell startet.
  * Bei jeder Inhaltsänderung CACHE_VERSION erhöhen, dann lädt der SW neu.
  */
-const CACHE_VERSION = "lernapp-v2";
+const CACHE_VERSION = "lernapp-v3";
 
 // Relative Pfade, damit es auch im Unterpfad von GitHub Pages funktioniert.
 const APP_SHELL = [
