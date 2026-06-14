@@ -2,7 +2,7 @@
  * Cacht die App-Shell, damit die App offline läuft und schnell startet.
  * Bei jeder Inhaltsänderung CACHE_VERSION erhöhen, dann lädt der SW neu.
  */
-const CACHE_VERSION = "lernapp-v4";
+const CACHE_VERSION = "lernapp-v5";
 
 // Relative Pfade, damit es auch im Unterpfad von GitHub Pages funktioniert.
 const APP_SHELL = [
@@ -40,6 +40,24 @@ self.addEventListener("fetch", (event) => {
   if (req.mode === "navigate") {
     event.respondWith(
       fetch(req).catch(() => caches.match("./index.html"))
+    );
+    return;
+  }
+
+  // Manifest immer zuerst aus dem Netz laden (network-first), damit z. B. eine
+  // geänderte Bildschirmausrichtung sofort übernommen wird. Nur offline wird
+  // auf den Cache zurückgegriffen. (Android backt Manifest-Werte wie
+  // "orientation" beim Installieren fest ein – ein veraltetes Manifest aus dem
+  // Cache würde sonst die alte Ausrichtung erneut einbacken.)
+  if (req.url.includes("manifest.webmanifest")) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE_VERSION).then((cache) => cache.put(req, copy));
+          return res;
+        })
+        .catch(() => caches.match(req))
     );
     return;
   }
