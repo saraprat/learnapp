@@ -39,26 +39,30 @@ body {
   margin: 6px 0 0;
   color: var(--muted);
 }
-.topic-select {
+/* Themen-Reiter (Register) */
+.topic-tabs {
   display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 14px;
+  gap: 4px;
+  margin-top: 16px;
+  border-bottom: 2px solid var(--border);
+}
+.topic-tab {
+  border: none;
+  background: none;
   color: var(--muted);
-  font-size: 0.9rem;
-}
-.topic-select select {
   font: inherit;
+  font-size: 0.98rem;
   font-weight: 600;
-  color: var(--text);
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  border-radius: 999px;
-  padding: 8px 14px;
+  padding: 9px 18px;
   cursor: pointer;
-  outline: none;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
-.topic-select select:focus { border-color: var(--eu-blue); }
+.topic-tab:hover { color: var(--eu-blue); background: #eef1f8; }
+.topic-tab.active { color: var(--eu-blue); border-bottom-color: var(--eu-blue); }
+.topic-tab:focus-visible { outline: 2px solid var(--eu-blue); outline-offset: 2px; }
 
 .modes {
   display: flex;
@@ -245,7 +249,8 @@ body {
 @media (orientation: landscape) and (max-height: 520px) {
   .app-header { padding: 12px 16px 4px; }
   .app-header h1 { font-size: clamp(1.3rem, 3.5vw, 1.9rem); }
-  .topic-select { margin-top: 8px; }
+  .topic-tabs { margin-top: 8px; }
+  .topic-tab { padding: 7px 14px; }
   .modes { padding: 8px 16px; }
   .mode-btn { padding: 8px 14px; font-size: 0.9rem; }
   .view { padding: 4px 16px 16px; }

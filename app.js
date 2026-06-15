@@ -12,8 +12,9 @@
   const wrongCountEl = document.getElementById("wrong-count");
   const resetWrongBtn = document.getElementById("reset-wrong");
   const subtitleEl = document.getElementById("app-subtitle");
-  const topicSelect = document.getElementById("topic");
+  const topicTabsEl = document.getElementById("topic-tabs");
   const modeButtons = Array.from(document.querySelectorAll(".mode-btn"));
+  let topicButtons = []; // Reiter-Buttons je Thema
 
   let topic = TOPICS[0]; // aktuelles Thema
   let mode = "flashcards";
@@ -97,8 +98,12 @@
     const next = TOPICS.find((t) => t.id === id) || TOPICS[0];
     topic = next;
     try { localStorage.setItem(TOPIC_KEY, topic.id); } catch (_) { /* ignore */ }
-    topicSelect.value = topic.id;
-    subtitleEl.textContent = `${topic.emoji} ${topic.name} · ${topic.subtitle}`;
+    topicButtons.forEach((b) => {
+      const active = b.dataset.topic === topic.id;
+      b.classList.toggle("active", active);
+      b.setAttribute("aria-selected", active ? "true" : "false");
+    });
+    subtitleEl.textContent = topic.subtitle;
     document.title = `Vinci-Lernapp · ${topic.name}`;
     updateWrongBadge();
     setMode(mode);
@@ -420,14 +425,18 @@
 
   /* ---------- Init ---------- */
 
-  // Themen-Auswahl füllen.
-  TOPICS.forEach((t) => {
-    const opt = document.createElement("option");
-    opt.value = t.id;
-    opt.textContent = `${t.emoji} ${t.name}`;
-    topicSelect.appendChild(opt);
+  // Themen-Reiter aufbauen.
+  topicButtons = TOPICS.map((t) => {
+    const btn = document.createElement("button");
+    btn.className = "topic-tab";
+    btn.type = "button";
+    btn.dataset.topic = t.id;
+    btn.setAttribute("role", "tab");
+    btn.textContent = `${t.emoji} ${t.name}`;
+    btn.addEventListener("click", () => setTopic(t.id));
+    topicTabsEl.appendChild(btn);
+    return btn;
   });
-  topicSelect.addEventListener("change", () => setTopic(topicSelect.value));
 
   modeButtons.forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
   resetWrongBtn.addEventListener("click", () => {

@@ -5,7 +5,7 @@ läuft direkt im Browser und auf GitHub Pages, ohne Abhängigkeiten.
 
 ## Themen
 
-Oben lässt sich über das Auswahlfeld **Thema** zwischen den Lerninhalten umschalten:
+Oben lässt sich über die **Reiter (Register)** zwischen den Lerninhalten umschalten:
 
 - **🇪🇺 EU-Länder** – die 27 EU-Mitgliedsstaaten und ihre Hauptstädte.
 - **🌼 Blütenpflanzen** – Biologie: Aufbau der Pflanze und der Blüte, Bestäubung,
