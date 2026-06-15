@@ -10,6 +10,10 @@ Oben lässt sich über die **Reiter (Register)** zwischen den Lerninhalten umsch
 - **🇪🇺 EU-Länder** – die 27 EU-Mitgliedsstaaten und ihre Hauptstädte.
 - **🌼 Blütenpflanzen** – Biologie: Aufbau der Pflanze und der Blüte, Bestäubung,
   Befruchtung, Früchte und Samenverbreitung (aus dem Schul-Dossier).
+- **🇬🇧 Englische Verben** – die 103 wichtigsten unregelmäßigen Verben. Angezeigt
+  wird das deutsche Verb, einzutragen ist die englische Form in **Gegenwart und
+  Vergangenheit** (im Modus „Tippen" mit zwei Schreibfeldern; mehrere zulässige
+  Formen wie `was/were` oder `burnt/burned` werden akzeptiert).
 
 Jedes Thema hat seine eigene „Falsche üben"-Liste.
 

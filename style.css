@@ -191,6 +191,14 @@ body {
 }
 .type-input:focus { border-color: var(--eu-blue); }
 
+/* Tippen-Variante mit zwei Feldern (Verben) */
+.type-form--verb { flex-direction: column; align-items: stretch; }
+.verb-field { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+.verb-field span { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.verb-field .type-input { width: 100%; }
+.type-input.input-ok { border-color: var(--ok); background: var(--ok-bg); }
+.type-input.input-bad { border-color: var(--bad); background: var(--bad-bg); }
+
 .feedback { margin-top: 18px; font-weight: 600; min-height: 1.4em; }
 .feedback.ok { color: var(--ok); }
 .feedback.bad { color: var(--bad); }

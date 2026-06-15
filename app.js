@@ -92,6 +92,13 @@
     progressEl.textContent = text || "";
   }
 
+  // Prüft eine Eingabe gegen eine Antwort, die mehrere zulässige Formen
+  // enthalten kann (getrennt durch "/" oder ","), z. B. "was/were".
+  function answerMatches(guess, answer) {
+    const g = normalize(guess);
+    return answer.split(/[\/,]/).some((opt) => normalize(opt) === g);
+  }
+
   /* ---------- Themen-Steuerung ---------- */
 
   function setTopic(id) {
@@ -253,6 +260,9 @@
     if (index >= deck.length) return renderRoundDone("Tippen", true);
     const c = deck[index];
 
+    // Verben: zwei Felder (Gegenwart & Vergangenheit) abfragen.
+    if (c.present !== undefined) return renderTypeVerb(c);
+
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML =
@@ -300,6 +310,69 @@
 
     view.appendChild(card);
     input.focus();
+    setProgress(`Frage ${index + 1} von ${deck.length}`);
+  }
+
+  // Tippen-Variante für Verben: getrennte Felder für Gegenwart und Vergangenheit.
+  function renderTypeVerb(c) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML =
+      `<div class="prompt-flag">${c.icon || ""}</div>` +
+      `<div class="prompt-label">${topic.promptLabel}</div>` +
+      `<p class="prompt-value">${c.front}</p>` +
+      `<form class="type-form type-form--verb">` +
+      `<label class="verb-field"><span>Gegenwart</span>` +
+      `<input class="type-input" data-form="present" type="text" autocomplete="off" ` +
+      `autocapitalize="none" spellcheck="false" placeholder="present" aria-label="Gegenwart" /></label>` +
+      `<label class="verb-field"><span>Vergangenheit</span>` +
+      `<input class="type-input" data-form="past" type="text" autocomplete="off" ` +
+      `autocapitalize="none" spellcheck="false" placeholder="past" aria-label="Vergangenheit" /></label>` +
+      `<button class="btn" type="submit">Prüfen</button>` +
+      `</form>` +
+      `<div class="feedback" role="status"></div>` +
+      `<div class="score-line">Richtig: ${score} / ${deck.length}</div>`;
+
+    const form = card.querySelector("form");
+    const inPresent = card.querySelector('[data-form="present"]');
+    const inPast = card.querySelector('[data-form="past"]');
+    const feedback = card.querySelector(".feedback");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!inPresent.value.trim() && !inPast.value.trim()) return;
+
+      const okPresent = answerMatches(inPresent.value, c.present);
+      const okPast = answerMatches(inPast.value, c.past);
+      const correct = okPresent && okPast;
+
+      inPresent.disabled = true;
+      inPast.disabled = true;
+      form.querySelector("button").disabled = true;
+      inPresent.classList.add(okPresent ? "input-ok" : "input-bad");
+      inPast.classList.add(okPast ? "input-ok" : "input-bad");
+
+      if (correct) {
+        score++;
+        feedback.textContent = "✓ Richtig!";
+        feedback.className = "feedback ok";
+      } else {
+        markWrong(c.front);
+        feedback.textContent = `✗ Richtig: ${c.present} – ${c.past}`;
+        feedback.className = "feedback bad";
+      }
+
+      const next = document.createElement("button");
+      next.className = "btn";
+      next.style.marginTop = "16px";
+      next.textContent = index + 1 < deck.length ? "Weiter" : "Ergebnis";
+      next.addEventListener("click", () => { index++; renderType(); });
+      card.appendChild(next);
+      next.focus();
+    });
+
+    view.appendChild(card);
+    inPresent.focus();
     setProgress(`Frage ${index + 1} von ${deck.length}`);
   }
 
@@ -424,6 +497,14 @@
   }
 
   /* ---------- Init ---------- */
+
+  // Karten mit present/past (Verben): "back" für die Anzeige (Karteikarten,
+  // Quiz, Liste) automatisch aus beiden Formen zusammensetzen.
+  TOPICS.forEach((t) => t.cards.forEach((c) => {
+    if (c.present !== undefined && c.back === undefined) {
+      c.back = `${c.present} – ${c.past}`;
+    }
+  }));
 
   // Themen-Reiter aufbauen.
   topicButtons = TOPICS.map((t) => {
