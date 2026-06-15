@@ -199,6 +199,16 @@ body {
 .type-input.input-ok { border-color: var(--ok); background: var(--ok-bg); }
 .type-input.input-bad { border-color: var(--bad); background: var(--bad-bg); }
 
+/* Konjugation (Französisch): ganze Tabelle eintragen */
+.type-form--conj { flex-direction: column; align-items: stretch; gap: 8px; }
+.conj-field { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 10px; text-align: left; }
+.conj-field span { font-size: 0.85rem; color: var(--muted); }
+.conj-field .type-input { width: 100%; min-width: 0; }
+.conj-field--pc { margin-top: 6px; border-top: 1px dashed var(--border); padding-top: 12px; }
+.conj-solution { margin-top: 8px; font-weight: 600; color: var(--text); line-height: 1.7; }
+.conj-table { line-height: 1.9; font-size: 1.15rem; margin: 12px 0; color: var(--text); }
+.conj-table { font-weight: 600; }
+
 .feedback { margin-top: 18px; font-weight: 600; min-height: 1.4em; }
 .feedback.ok { color: var(--ok); }
 .feedback.bad { color: var(--bad); }

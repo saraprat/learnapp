@@ -14,6 +14,11 @@ Oben lässt sich über die **Reiter (Register)** zwischen den Lerninhalten umsch
   wird das deutsche Verb, einzutragen ist die englische Form in **Gegenwart und
   Vergangenheit** (im Modus „Tippen" mit zwei Schreibfeldern; mehrere zulässige
   Formen wie `was/were` oder `burnt/burned` werden akzeptiert).
+- **🇫🇷 Französische Verben** – 53 Verben mit voller **Konjugation**: deutsches
+  Verb anzeigen, dann **Présent (alle Personen)** und **Passé composé** schreiben
+  (im Modus „Tippen" mit einem Feld je Person). Tolerant bei Akzenten,
+  Apostroph-Varianten, der optionalen Genus-Endung `(e)` und gleichwertigen
+  Subjekten (`il`/`elle`).
 
 Jedes Thema hat seine eigene „Falsche üben"-Liste.
 

@@ -99,6 +99,44 @@
     return answer.split(/[\/,]/).some((opt) => normalize(opt) === g);
   }
 
+  // Französische Konjugation tolerant vergleichen: Akzente (von normalize
+  // entfernt), Apostroph-Varianten, optionale Genus-Endung "(e)" und ein
+  // vorangestelltes Subjektpronomen werden ignoriert. "il parle" akzeptiert
+  // also auch "elle parle" oder nur "parle".
+  function conjCore(s) {
+    let x = normalize(s)
+      .replace(/[’'`]/g, "'")
+      .replace(/\s*'\s*/g, "'")
+      .replace(/\s+/g, " ")
+      .trim();
+    x = x.replace(/^(j'|je |tu |il |elle |on |nous |vous |ils |elles )/, "");
+    return x.trim();
+  }
+  function conjVariants(answer) {
+    const out = [];
+    answer.split("/").forEach((b) => {
+      if (/\(e\)/.test(b)) {
+        out.push(b.replace(/\(e\)/g, ""));
+        out.push(b.replace(/\(e\)/g, "e"));
+      } else {
+        out.push(b);
+      }
+    });
+    return out;
+  }
+  function conjMatches(guess, answer) {
+    const g = conjCore(guess);
+    return conjVariants(answer).some((v) => conjCore(v) === g);
+  }
+  // Lösungs-Anzeige (alle Formen) für Konjugationskarten.
+  function conjSolution(c) {
+    return [
+      c.present.je, c.present.tu, c.present.il,
+      c.present.nous, c.present.vous, c.present.ils,
+      "passé composé: " + c.pc,
+    ].join("<br>");
+  }
+
   /* ---------- Themen-Steuerung ---------- */
 
   function setTopic(id) {
@@ -159,10 +197,14 @@
         `<p class="hint">Tippe auf die Karte, um die Antwort zu sehen</p>`;
     }
     function paintBack() {
+      const answerHtml = typeof c.present === "object"
+        ? `<div class="prompt-label">${c.fr} · Konjugation</div>` +
+          `<div class="conj-table">${conjSolution(c)}</div>`
+        : `<div class="prompt-label">${topic.answerLabel}</div>` +
+          `<p class="prompt-value answer">${c.back}</p>`;
       card.innerHTML =
         `<div class="prompt-flag">${c.icon || ""}</div>` +
-        `<div class="prompt-label">${topic.answerLabel}</div>` +
-        `<p class="prompt-value answer">${c.back}</p>` +
+        answerHtml +
         `<div class="row-btns">` +
         `<button class="btn btn--bad" data-act="nope">Nicht gewusst</button>` +
         `<button class="btn btn--ok" data-act="yep">Gewusst</button>` +
@@ -260,7 +302,9 @@
     if (index >= deck.length) return renderRoundDone("Tippen", true);
     const c = deck[index];
 
-    // Verben: zwei Felder (Gegenwart & Vergangenheit) abfragen.
+    // Französische Verben: ganze Konjugation abfragen.
+    if (typeof c.present === "object") return renderTypeConjugation(c);
+    // Englische Verben: zwei Felder (Gegenwart & Vergangenheit) abfragen.
     if (c.present !== undefined) return renderTypeVerb(c);
 
     const card = document.createElement("div");
@@ -373,6 +417,82 @@
 
     view.appendChild(card);
     inPresent.focus();
+    setProgress(`Frage ${index + 1} von ${deck.length}`);
+  }
+
+  // Tippen-Variante für französische Verben: ganze Präsens-Konjugation
+  // (alle Personen) plus Passé composé eintragen.
+  function renderTypeConjugation(c) {
+    const rows = [
+      ["je", c.present.je],
+      ["tu", c.present.tu],
+      ["il / elle", c.present.il],
+      ["nous", c.present.nous],
+      ["vous", c.present.vous],
+      ["ils / elles", c.present.ils],
+    ];
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML =
+      `<div class="prompt-flag">${c.icon || ""}</div>` +
+      `<div class="prompt-label">Konjugieren – présent & passé composé</div>` +
+      `<p class="prompt-value">${c.front}</p>` +
+      `<p class="hint">(${c.fr})</p>` +
+      `<form class="type-form type-form--conj">` +
+      rows.map((r, i) =>
+        `<label class="conj-field"><span>${r[0]}</span>` +
+        `<input class="type-input" data-i="${i}" type="text" autocomplete="off" ` +
+        `autocapitalize="none" spellcheck="false" placeholder="${r[0].split(" ")[0]} …" aria-label="${r[0]}" /></label>`
+      ).join("") +
+      `<label class="conj-field conj-field--pc"><span>passé composé</span>` +
+      `<input class="type-input" data-i="pc" type="text" autocomplete="off" ` +
+      `autocapitalize="none" spellcheck="false" placeholder="z. B. j'ai …" aria-label="passé composé" /></label>` +
+      `<button class="btn" type="submit">Prüfen</button>` +
+      `</form>` +
+      `<div class="feedback" role="status"></div>` +
+      `<div class="score-line">Richtig: ${score} / ${deck.length}</div>`;
+
+    const form = card.querySelector("form");
+    const inputs = Array.from(card.querySelectorAll(".type-input"));
+    const answers = rows.map((r) => r[1]).concat([c.pc]);
+    const feedback = card.querySelector(".feedback");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (inputs.every((inp) => !inp.value.trim())) return;
+
+      let allOk = true;
+      inputs.forEach((inp, i) => {
+        const ok = conjMatches(inp.value, answers[i]);
+        if (!ok) allOk = false;
+        inp.disabled = true;
+        inp.classList.add(ok ? "input-ok" : "input-bad");
+      });
+      form.querySelector("button").disabled = true;
+
+      if (allOk) {
+        score++;
+        feedback.textContent = "✓ Richtig!";
+        feedback.className = "feedback ok";
+      } else {
+        markWrong(c.front);
+        feedback.innerHTML =
+          `✗ Richtig:<div class="conj-solution">${conjSolution(c)}</div>`;
+        feedback.className = "feedback bad";
+      }
+
+      const next = document.createElement("button");
+      next.className = "btn";
+      next.style.marginTop = "16px";
+      next.textContent = index + 1 < deck.length ? "Weiter" : "Ergebnis";
+      next.addEventListener("click", () => { index++; renderType(); });
+      card.appendChild(next);
+      next.focus();
+    });
+
+    view.appendChild(card);
+    inputs[0].focus();
     setProgress(`Frage ${index + 1} von ${deck.length}`);
   }
 
@@ -502,7 +622,9 @@
   // Quiz, Liste) automatisch aus beiden Formen zusammensetzen.
   TOPICS.forEach((t) => t.cards.forEach((c) => {
     if (c.present !== undefined && c.back === undefined) {
-      c.back = `${c.present} – ${c.past}`;
+      c.back = typeof c.present === "object"
+        ? `${c.fr} – ${c.pc}`              // Französisch: Infinitiv – Passé composé
+        : `${c.present} – ${c.past}`;       // Englisch: Gegenwart – Vergangenheit
     }
   }));
 
