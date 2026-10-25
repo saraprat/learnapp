@@ -469,6 +469,18 @@
     view.appendChild(set);
   }
 
+  /* ---------- Allgemein: Apostroph vereinheitlichen ---------- */
+  // Handy-Tastaturen setzen oft ’ statt ' – beim Tippen-Modus angleichen,
+  // damit z. B. "j’ai bu" als richtig erkannt wird.
+  document.addEventListener("input", (e) => {
+    const el = e.target;
+    if (el && el.classList && el.classList.contains("type-input") && /[’‘`´]/.test(el.value)) {
+      const pos = el.selectionStart;
+      el.value = el.value.replace(/[’‘`´]/g, "'");
+      try { el.setSelectionRange(pos, pos); } catch (_) { /* ignore */ }
+    }
+  });
+
   /* ---------- Init ---------- */
 
   const planBtn = document.createElement("button");
