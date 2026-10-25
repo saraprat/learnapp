@@ -135,3 +135,30 @@
   .ws-sheet { border: none; border-radius: 0; padding: 0; font-size: 11.5pt; }
   .ws-solutions { break-before: page; page-break-before: always; border-top: none; margin-top: 0; padding-top: 0; }
 }
+
+/* ---------- Merkblatt ---------- */
+.mb-mode-hidden { display: none; }
+.mb { background: #fff; color: #1a1f36; border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 20px; line-height: 1.5; }
+.mb h2 { margin: 0 0 6px; color: var(--eu-blue); font-size: 1.45rem; }
+.mb h3 { margin: 0 0 8px; font-size: 1.1rem; color: var(--eu-blue); }
+.mb h4 { margin: 8px 0 2px; font-size: 0.95rem; }
+.mb p { margin: 6px 0; }
+.mb-lead { color: var(--muted); }
+.mb-box { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-top: 12px; break-inside: avoid; page-break-inside: avoid; }
+.mb-box--blue { background: #eef3fc; border-color: #c9d6f2; }
+.mb-box--yellow { background: #fff8d6; border-color: #f0dc7a; }
+.mb-formula { font-weight: 700; font-size: 1.05rem; }
+.mb-s { color: #3d8b3d; } .mb-h { color: #b0283a; } .mb-p { color: #6a3fa0; }
+.mb-tip { font-size: 0.95em; }
+.mb-table { border-collapse: collapse; margin: 6px 0; width: 100%; max-width: 520px; font-size: 0.95em; }
+.mb-table th, .mb-table td { border: 1px solid var(--border); padding: 4px 8px; text-align: left; }
+.mb-table th { background: #f4f6fb; }
+.mb-table--small { font-size: 0.9em; }
+.mb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.95em; }
+.mb ul, .mb ol { margin: 4px 0; padding-left: 1.4em; }
+.mb s { color: var(--bad); }
+
+@media print {
+  .mb { border: none; padding: 0; font-size: 10.5pt; }
+  .mb-box { padding: 8px 10px; margin-top: 8px; }
+}
