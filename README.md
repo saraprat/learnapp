@@ -34,6 +34,29 @@ Jedes Thema hat seine eigene „Falsche üben"-Liste.
   (oder alle über „Falsche zurücksetzen" löscht). Gespeichert in `localStorage` (pro Thema getrennt),
   bleibt also über Sitzungen hinweg erhalten.
 
+## 📅 Lernplan
+
+Der Reiter **„📅 Lernplan"** plant die Lerneinheiten bis zu den Prüfungen:
+
+- **Prüfungen** – Prüfung mit Thema (aus `data.js`, optional) und Datum eintragen, bearbeiten oder löschen.
+  Ohne App-Thema genügt eine Bezeichnung (z. B. für Lernstoff aus dem Heft).
+  Dazu die **Lernzeit pro Tag** (Standard 30 Min.) und die **Lerntage** (Standard Mo–Fr) einstellen.
+- **Heute** – zeigt die heutigen Aufgaben mit Minuten, Abhaken und **„Starten"**, das direkt das
+  passende Thema im passenden Lernmodus öffnet. Fortschrittsbalken für den Tag.
+- **Übersicht** – alle geplanten Lerntage bis zur letzten Prüfung (max. 60 Tage).
+
+Die Lerntage vor einer Prüfung durchlaufen vier Phasen:
+
+| Phase | Zeitpunkt | Lernmodi |
+| ------------ | ---------------------- | ------------------------------- |
+| Kennenlernen | erstes Drittel | Liste durchlesen, Karteikarten |
+| Festigen | zweites Drittel | Karteikarten, Quiz |
+| Prüfen | letztes Drittel | Tippen, Falsche üben |
+| Generalprobe | letzter Lerntag | Falsche üben, Tippen |
+
+Liegen mehrere Prüfungen gleichzeitig an, wird die Tageszeit aufgeteilt; Prüfungen in den nächsten
+3 Tagen bekommen doppelt so viel Zeit. Alles wird in `localStorage` gespeichert (`lernapp-plan`).
+
 ## Als Web-App installieren (PWA)
 
 Die App ist eine **Progressive Web App** und lässt sich auf Handy oder Desktop
@@ -65,15 +88,17 @@ muss als Source **„GitHub Actions"** ausgewählt sein.
 
 ## Dateien
 
-| Datei         | Zweck                                          |
-| ------------- | ---------------------------------------------- |
-| `index.html`  | Seitenstruktur                                 |
-| `style.css`   | Gestaltung                                     |
-| `app.js`      | Logik aller Lernmodi (themenunabhängig)        |
-| `data.js`     | Die Themen mit ihren Lernkarten                |
-| `manifest.webmanifest` | Web-App-Manifest (Name, Icon, Farben) |
-| `service-worker.js`    | Offline-Cache der App-Shell           |
-| `icon.svg`    | App-Icon                                       |
+| Datei                  | Zweck                                          |
+| ---------------------- | ---------------------------------------------- |
+| `index.html`           | Seitenstruktur                                 |
+| `style.css`            | Gestaltung                                     |
+| `plan.css`             | Gestaltung des Lernplans                       |
+| `app.js`               | Logik aller Lernmodi (themenunabhängig)        |
+| `plan.js`              | Lernplan: Prüfungen, Tagesplan, Übersicht      |
+| `data.js`              | Die Themen mit ihren Lernkarten                |
+| `manifest.webmanifest` | Web-App-Manifest (Name, Icon, Farben)          |
+| `service-worker.js`    | Offline-Cache der App-Shell                    |
+| `icon.svg`             | App-Icon                                       |
 
 ## Neues Thema hinzufügen
 
@@ -85,9 +110,9 @@ In `data.js` dem Array `TOPICS` ein Objekt hinzufügen:
   name: "Anzeigename",
   emoji: "📚",
   subtitle: "Kurzbeschreibung",
-  promptLabel: "Frage",        // Label auf der Kartenvorderseite
-  answerLabel: "Antwort",      // Label auf der Kartenrückseite
-  quizPrompt: "",              // optionaler Text vor der Quizfrage
+  promptLabel: "Frage",          // Label auf der Kartenvorderseite
+  answerLabel: "Antwort",        // Label auf der Kartenrückseite
+  quizPrompt: "",                // optionaler Text vor der Quizfrage
   typePlaceholder: "Antwort eingeben…",
   cards: [
     { front: "Frage?", back: "Antwort", icon: "🔤" },
@@ -95,3 +120,5 @@ In `data.js` dem Array `TOPICS` ein Objekt hinzufügen:
   ],
 }
 ```
+
+Neue Themen erscheinen automatisch in der Themenauswahl des Lernplans.

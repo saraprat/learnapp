@@ -1,0 +1,93 @@
+/* Lernplan-Reiter */
+.modes[hidden], .app-footer[hidden] { display: none; }
+.topic-tabs { flex-wrap: wrap; justify-content: center; }
+.topic-tab--plan { color: var(--eu-blue); }
+
+.plan-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  padding: 8px 0 16px;
+}
+
+.plan-card { margin-bottom: 16px; }
+.plan-card > .prompt-label:first-child { margin-top: 0; }
+
+.plan-block {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 12px;
+}
+.plan-block-head { display: flex; flex-direction: column; gap: 2px; }
+.plan-title { font-weight: 700; font-size: 1.1rem; }
+.plan-meta { color: var(--muted); font-size: 0.88rem; }
+
+.plan-tasks { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 8px; }
+.plan-tasks li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+.plan-tasks li.done span { color: var(--muted); text-decoration: line-through; }
+.plan-check { display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; }
+.plan-check input { width: 20px; height: 20px; accent-color: var(--ok); }
+.btn--small { padding: 7px 12px; font-size: 0.9rem; border-radius: 8px; }
+.plan-hint { color: var(--muted); font-size: 0.85rem; margin: 8px 0 0; }
+
+.plan-exam-today {
+  background: var(--eu-gold);
+  color: var(--eu-blue);
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 10px;
+}
+
+.plan-progress { display: flex; align-items: center; gap: 12px; margin-top: 16px; color: var(--muted); font-size: 0.9rem; }
+.plan-bar { flex: 1; height: 10px; background: var(--border); border-radius: 999px; overflow: hidden; }
+.plan-bar span { display: block; height: 100%; background: var(--ok); transition: width 0.3s ease; }
+
+.plan-overview { display: grid; gap: 12px; }
+.plan-day { padding: 16px 18px; }
+.plan-day > .prompt-label:first-child { margin-top: 0; }
+.plan-day--today { border-color: var(--eu-blue); }
+.plan-day .plan-block { margin-top: 8px; padding: 10px 12px; }
+.plan-day .plan-tasks li { padding: 6px 10px; }
+
+.plan-form { display: grid; gap: 12px; margin-top: 8px; }
+.plan-form label { display: flex; flex-direction: column; gap: 4px; }
+.plan-form label span,
+.plan-inline span,
+.plan-days > span { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.plan-form input,
+.plan-form select,
+.plan-inline select {
+  padding: 11px 12px;
+  font: inherit;
+  font-size: 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--text);
+}
+.plan-form input:focus,
+.plan-form select:focus { outline: none; border-color: var(--eu-blue); }
+.plan-form .row-btns { justify-content: flex-start; margin-top: 4px; }
+.plan-form .feedback { margin: 0; min-height: 0; }
+
+.plan-exam-list { margin-bottom: 16px; }
+.plan-exam-list li { align-items: center; }
+.plan-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.plan-del { color: var(--bad); }
+
+.plan-inline { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; max-width: 220px; }
+.plan-days { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-top: 14px; }
+.plan-days > span { width: 100%; }
+.plan-days label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+.plan-days input { width: 18px; height: 18px; accent-color: var(--eu-blue); }
