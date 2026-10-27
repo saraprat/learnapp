@@ -22,6 +22,8 @@ Oben lässt sich über die **Reiter (Register)** zwischen den Lerninhalten umsch
 
 Jedes Thema hat seine eigene „Falsche üben"-Liste.
 
+- 🔢 **Ganze Zahlen (Mathematik, 8. Klasse E, Kapitel 6c)** – vier Themen: *Ganze Zahlen: Rechnen* (35 Aufgaben zu Multiplizieren, Dividieren, Potenzen und Rechenreihenfolge), *Vorzeichen von Potenzen*, *Temperaturen* (Celsius, Fahrenheit, Windchill-Term, Kelvin) und *Merkwissen*. Zahlen im Modus „Tippen" mit normalem Minus eintippen (z. B. -56). Die Kelvin-Karten beruhen auf allgemeinem Wissen und sollten mit dem Dossier abgeglichen werden. Dateien: `data-zahlen.js`.
+
 ## Lernmodi
 
 - **Karteikarten** – Frage ansehen, antippen, Antwort aufdecken, „Gewusst / Nicht gewusst" markieren.

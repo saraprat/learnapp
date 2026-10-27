@@ -2,7 +2,7 @@
  * Cacht die App-Shell, damit die App offline läuft und schnell startet.
  * Bei jeder Inhaltsänderung CACHE_VERSION erhöhen, dann lädt der SW neu.
  */
-const CACHE_VERSION = "lernapp-v12";
+const CACHE_VERSION = "lernapp-v13";
 
 // Relative Pfade, damit es auch im Unterpfad von GitHub Pages funktioniert.
 const APP_SHELL = [
@@ -12,6 +12,7 @@ const APP_SHELL = [
   "./plan.css",
   "./data.js",
   "./data-pc.js",
+  "./data-zahlen.js",
   "./app.js",
   "./plan.js",
   "./print.js",

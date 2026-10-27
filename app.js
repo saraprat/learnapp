@@ -83,6 +83,7 @@
       .toLowerCase()
       .trim()
       .replace(/ß/g, "ss")
+      .replace(/[−–—]/g, "-") // typografisches Minus wie normales Minus behandeln
       .normalize("NFD")
       .replace(/[̀-ͯ]/g, "")
       .replace(/\s+/g, " ");
@@ -347,7 +348,7 @@
       next.className = "btn";
       next.style.marginTop = "16px";
       next.textContent = index + 1 < deck.length ? "Weiter" : "Ergebnis";
-      next.addEventListener("click", () => { index++; renderType(); });
+      next.addEventListener("click", () => { index++; view.innerHTML = ""; renderType(); });
       card.appendChild(next);
       next.focus();
     });
@@ -410,7 +411,7 @@
       next.className = "btn";
       next.style.marginTop = "16px";
       next.textContent = index + 1 < deck.length ? "Weiter" : "Ergebnis";
-      next.addEventListener("click", () => { index++; renderType(); });
+      next.addEventListener("click", () => { index++; view.innerHTML = ""; renderType(); });
       card.appendChild(next);
       next.focus();
     });
@@ -486,7 +487,7 @@
       next.className = "btn";
       next.style.marginTop = "16px";
       next.textContent = index + 1 < deck.length ? "Weiter" : "Ergebnis";
-      next.addEventListener("click", () => { index++; renderType(); });
+      next.addEventListener("click", () => { index++; view.innerHTML = ""; renderType(); });
       card.appendChild(next);
       next.focus();
     });
